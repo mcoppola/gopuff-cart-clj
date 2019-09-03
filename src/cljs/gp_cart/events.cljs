@@ -2,27 +2,50 @@
   (:require
    [re-frame.core :refer [reg-event-db dispatch]]
    [gp-cart.db :as db]
+   [gp-cart.data :as data]
    [ajax.core :as ajx]))
 
 
-; Initial Data
+
+
+; Fetch Order
+(reg-event-db 
+ ::get-order
+ (fn [db _]
+   (data/get-order-data
+    {:handler 
+     #(do
+       (dispatch [:process-order-res %])
+       (dispatch [:get-products (map :id (-> % :cart :products))]))})
+   (assoc db :loading? true)))
+
 (reg-event-db                   
-  :process-initial-res             
+  :process-order-res             
   (fn [db [_ res]]
     (-> db
       (assoc :loading? false)
       (assoc :user  (-> res :user))
       (assoc :order (-> res :cart :products)))))
 
-
+; Products
 (reg-event-db 
- ::load-initial-data
- (fn [db _]
-   (ajx/GET "https://gopuff-public.s3.amazonaws.com/dev-assignments/product/order.json"
-            {:handler #(dispatch [:process-initial-res %1])
-             :error-handler (fn [details] (.warn js/console (str "Failed to get order.json" details)))
-             :response-format :json, :keywords? true})
+ :get-products
+ (fn [db [_ products]]
+   (js/console.log (str "get-products" products))
+   (data/get-product-data
+    {:products products
+     :handler #(dispatch [:process-product-res %1])})
    (assoc db :loading? true)))
+
+(reg-event-db                   
+  :process-product-res             
+  (fn [db [_ res]]
+    (js/console.log "prodcess-product-res")
+    (-> db
+      (assoc :loading? false)
+      ; (assoc :cart (clojure.set/join (db :cart) (res :products)))
+      ; (assoc :order (-> res :cart :products)))
+      )))
 
 (reg-event-db
  ::initialize-db
