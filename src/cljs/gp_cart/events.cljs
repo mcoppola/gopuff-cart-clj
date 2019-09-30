@@ -25,7 +25,7 @@
  (fn [db [_ res]]
    (-> db
      (assoc :loading? false)
-     (assoc :user  (-> res :user))
+     (assoc :user (-> res :user))
      (assoc :cart (-> res :cart :products)))))
 
 
@@ -47,9 +47,18 @@
                   (db :cart) 
                   (map #(dissoc % :quantity :amount) (res :products)))]
      (-> db 
-       (assoc :loading? false )
+       (assoc :loading? false)
        (assoc :cart (map #(apply merge %) 
                          (vals (group-by :product_id joined))))))))
+; Cart Actions
+(reg-event-db
+ ::cart-transact
+ (fn [db [_ delta id]]
+   (js/console.log (str "delta: " delta "id:" id))
+   (assoc-in db 
+             [:cart] (map #(cond 
+                            (= (% :product_id) id) (update % :quantity + delta) 
+                            :else %) (db :cart)))))
 
 (reg-event-db
  ::initialize-db
@@ -65,3 +74,8 @@
  ::cart-add
  (fn [db [_ item]]
    (update-in db [:cart :items] concat [item])))
+
+
+
+
+
