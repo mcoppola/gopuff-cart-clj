@@ -35,15 +35,15 @@
 (defn cart-item [product] 
   [:div 
    {:class "cf w5 mb3 hide-child"}
-   [:img  {:class "fl" :src (-> product :images first :thumb) :width 120}]
+   [:img  {:class "fl" :src (-> product :images first :thumb) :width 80}]
    (add-btn product)
    (remove-btn product)
-   [:span {:class "fr mr2 br-100 tc pa1 w1 h1 bg-light-purple white"} (str (product :quantity))]
+   [:span {:class "fr mr2 br-100 tc pa1 w1 h1 bg-blue white"} (str (product :quantity))]
    [:span {:class "fr mr2 mt2"} (display-price (product-cost product))]])
 
 
   (defn cart []
-    (let [cart  (subscribe [::subs/cart])]
+    (let [cart (subscribe [::subs/cart])]
       [:div
        [:div
         (map cart-item @cart)]
@@ -52,14 +52,15 @@
         "reload cart"]]))
 
 
-
   (defn ledger []
     (let [cart (subscribe [::subs/cart])
           row {:total (display-price (calc-total @cart))}]
       [:h3 
-       {:class "mt0 fixed"}
+       {:class "fixed"}
        (str "total: " (row :total))]))
 
+
+; Outer Layout
 
   (defn main-panel []
     (let [loading?  (subscribe [::subs/loading?])
@@ -70,6 +71,6 @@
         (not @loading?) [:div {:class "cf"} 
                          [:h2 (str "Welcome back " (:first_name @user) " " (:last_name @user))]
                          [:h1 "Your Cart"]
-                         [:div {:class "fl w-50"} (cart)]
-                         [:div {:class "fl w-50"} (ledger)]]
+                         [:div {:class "fl w-60"} (cart)]
+                         [:div {:class "fl w-40"} (ledger)]]
         :else [:h3 "Loading your cart..."])]))

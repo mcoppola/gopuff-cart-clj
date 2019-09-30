@@ -7,7 +7,6 @@
   (js/console.error (str err)))
 
 
-
 (defn get-order-data [ops]
   (ajx/GET 
    "https://gopuff-public.s3.amazonaws.com/dev-assignments/product/order.json"
@@ -18,14 +17,10 @@
 
 
 (defn get-product-data [ops]
-  (js/console.log "get product data:")
-  (js/console.log (str (clojure.string/join "," (ops :products))))
   (ajx/GET 
    "https://prodcat.gopuff.com/api/products"
    {:handler (ops :handler)
-    :params {
-             :location_id -1
-             :product_ids (str (clojure.string/join "," (ops :products)))
-             }
+    :params {:location_id -1
+             :product_ids (str (clojure.string/join "," (ops :products)))}
     :error-handler (or (ops :error) error-default)
     :response-format :json, :keywords? true}))
