@@ -6,55 +6,39 @@
 
 
 (defn cart-item [product] 
-   [:div 
-    {:class "cf w5"}
-    [:span {:class "fl"} (str (product :id))]
-    [:span {:class "fr"} (str "$" (product :price))] ])
+  [:div 
+   {:class "cf w5 mb3 hide-child"}
+   [:img  {:class "fl" :src (-> product :images first :thumb) :width 80}]
+   
+   [:span {:class "fr f6 link grow br-100 tc pa1 w1 h1 white bg-green pointer child"} "+"]
+   [:span {:class "fr f6 link grow br-100 tc pa1 w1 h1 white bg-gray pointer child"} "-"]
+   [:span {:class "fr mr2 br-100 tc pa1 w1 h1 bg-light-purple white"} (str (product :quantity))]
+   [:span {:class "fr mr2"} (str "$" (* (product :price) (product :quantity)))]])
+
 
 (defn cart []
-   (let [order (subscribe [::subs/order])
-         user  (subscribe [::subs/user])]
-   [:div
+  (let [cart  (subscribe [::subs/cart])
+        user  (subscribe [::subs/user])]
+    [:div
      [:h2 (str "Welcome back " ( :first_name @user) " " (:last_name @user))]
-  
-     [:h4 "your cart products:"]
+     
+     [:h4 "Your Cart"]
      [:div 
-      (for [product @order]
-           (cart-item product))]
-  
+      (for [product @cart]
+        (cart-item product))]
+     
      [:button 
       {:on-click #(dispatch [::events/get-order])}
-       "reload cart"]]))
+      "reload cart"]]))
+
+
 
 
 (defn main-panel []
-   (let [items     (subscribe [::subs/items])
-         name      (subscribe [::subs/name])
-         loading?  (subscribe [::subs/loading?])]
+  (let [loading?  (subscribe [::subs/loading?])]
 
-      [:div
-       {:class "mw7 center mt5 avenir"}
-       [:h1 @name]
-       [:input      
-        {:value @name
-         :on-change  #(dispatch [::events/change-name (-> % .-target .-value)])}]
-        ; :on-change  (fn [evt] (dispatch [::events/change-name (.-value (.-target evt))]))}]
-        ; :on-change  (fn [evt] (dispatch [::events/change-name (-> evt .-target .-value)]))}]
-
-       [:button 
-        {:on-click #(dispatch [::events/cart-add {:title @name}])}
-         "add item"]
-
-       
-       [:h3 "todo list:"]
-       [:div
-         (for [item @items] 
-          [:div 
-           {:on-click #(js/console.log %)}
-           (item :title)])]
-
-        (cond 
-         (not @loading?) (cart)
-         :else [:h3 "Loading your cart..."])
-
-      ]))
+    [:div
+     {:class "mw7 center mt5 avenir"}
+     (cond 
+      (not @loading?) (cart)
+      :else [:h3 "Loading your cart..."])]))
