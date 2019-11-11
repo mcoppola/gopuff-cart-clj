@@ -14,6 +14,11 @@
    (:loading? db)))
 
 (re-frame/reg-sub
+ ::view
+ (fn [db]
+   (:view db)))
+
+(re-frame/reg-sub
  ::user
  (fn [db]
    (:user db)))

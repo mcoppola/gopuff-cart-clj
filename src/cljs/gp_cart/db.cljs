@@ -2,4 +2,5 @@
 
 (def default-db
   {:user {}
-   :cart [] })
+   :cart []
+   :view {:show-details? false} })

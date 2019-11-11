@@ -1,0 +1,43 @@
+
+.gp-cart {
+  position: relative;
+  max-width: 600px;
+  margin: 0vh auto 15vh;
+
+  &__header {
+    z-index: 3;
+
+    @extend .pa4;
+    @extend .tc;
+  }
+
+
+  &__ledger {
+    position: fixed;
+    width: 100%;
+  }
+
+  &__items {
+    @extend .cf;
+    position: relative;
+    max-height: 60vh;
+    padding: 4rem 3rem;
+    overflow: scroll;
+    background: #fff;
+    border-radius: 9px;
+
+
+    box-shadow: 0 2px 2px rgba(13, 31, 64, 0.12), 
+          0 4px 4px rgba(13, 31, 64, 0.12), 
+          0 8px 8px rgba(13, 31, 64, 0.12), 
+          0 16px 16px rgba(13, 31, 64, 0.12),
+          0 31px 56px rgba(13, 31, 64, 0.12);
+  }
+
+  &__item {
+    position: relative;
+    @extend .fl;
+    @extend .w-50;
+    @extend .z-2;
+  }
+}

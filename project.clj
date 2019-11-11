@@ -6,7 +6,8 @@
                  [thheller/shadow-cljs "2.8.48"]
                  [reagent "0.8.1"]
                  [re-frame "0.10.8"]
-                 [cljs-ajax "0.8.0"]]
+                 [cljs-ajax "0.8.0"]
+                 [binaryage/devtools "0.9.10"]]
 
   :plugins []
 
@@ -15,6 +16,9 @@
   :source-paths ["src/clj" "src/cljs"]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
+  
+  :sass {:source-paths ["src/sass"]
+         :target-path "resources/public/css"}
 
 
   :aliases {"dev"  ["with-profile" "dev" "run" "-m" "shadow.cljs.devtools.cli" "watch" "app"]
@@ -22,7 +26,8 @@
 
   :profiles
   {:dev
-   {:dependencies [[binaryage/devtools "0.9.10"]]}
+   {:dependencies [[binaryage/devtools "0.9.10"]]
+    :plugins [[deraen/lein-sass4clj "0.3.1"]]}
 
    :prod { }
    })
